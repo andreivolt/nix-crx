@@ -1,9 +1,9 @@
 {
-  description = "CRX3 signing and packaging for Chromium extensions";
+  description = "CRX3 signing and packaging for Chrome extensions";
 
   outputs = { self, ... }: {
     lib = {
-      mkCrxPackage = { pkgs, extension, key, name ? extension.pname or "chromium-extension" }:
+      mkCrxPackage = { pkgs, extension, key, name ? extension.pname or "chrome-extension" }:
         let
           manifest = builtins.fromJSON (builtins.readFile "${extension}/share/chromium-extension/manifest.json");
 
