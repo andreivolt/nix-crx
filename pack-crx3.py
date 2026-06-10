@@ -20,8 +20,13 @@ def pb_bytes(field, data):
 def make_zip(src_dir):
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        for root, _, files in os.walk(src_dir):
-            for f in files:
+        # Sort dirs and files so the archive byte-layout is independent of the
+        # filesystem's walk order — the CRX (and thus the Chrome ID Chrome
+        # derives) must be reproducible whether signed in a build sandbox or at
+        # activation from a sops key.
+        for root, dirs, files in os.walk(src_dir):
+            dirs.sort()
+            for f in sorted(files):
                 path = os.path.join(root, f)
                 arcname = os.path.relpath(path, src_dir)
                 # Nix store files have epoch 0 timestamps; ZIP requires >= 1980
